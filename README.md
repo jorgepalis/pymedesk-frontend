@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Pymedesk Frontend es una aplicación Next.js (App Router) que consume el backend de Django para gestionar autenticación, catálogo de productos, carrito de compras y panel de administración. Este documento describe cómo levantar el entorno local, configurar variables y entender la arquitectura general.
 
-## Getting Started
+## Requisitos previos
 
-First, run the development server:
+- Node.js 20 o superior.
+- npm (viene con Node.js).
+- Backend en ejecución en `http://localhost:8000/api/` o la URL que definas.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Configuración inicial
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Instala dependencias:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+	```bash
+	npm install
+	```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Crea un archivo `.env` en la raíz del proyecto con la variable necesaria:
 
-## Learn More
+	```properties
+	NEXT_PUBLIC_API_URL=http://localhost:8000/api/
+	```
 
-To learn more about Next.js, take a look at the following resources:
+	Ajusta el valor para apuntar al backend que corresponda. El valor debe terminar con `/`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Levanta el servidor de desarrollo:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+	```bash
+	npm run dev
+	```
 
-## Deploy on Vercel
+4. Abre `http://localhost:3000` en el navegador. El servidor recargará automáticamente ante cambios de código.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Resumen funcional
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Autenticación**: formularios de registro e inicio de sesión (`/register`, `/login`) con manejo de tokens JWT almacenados en `localStorage`. Tras autenticarse, se consulta `/me` para obtener el perfil con rol.
+- **Página principal (`/`)**: lista productos disponibles, permite agregar al carrito persistente en `localStorage`. Un botón flotante abre el drawer del carrito.
+- **Órdenes (`/orders`)**: muestra el historial de pedidos del usuario autenticado. Desde el carrito se pueden crear nuevas órdenes con los productos seleccionados.
+- **Panel de administración (`/admin`)**: acceso restringido a usuarios con rol `admin`. Incluye listado y mantenimiento básico de productos (crear y editar) y visualización de órdenes registradas.
+- **Carrito**: implementado con un provider React que expone acciones para añadir, incrementar, decrementar, eliminar y limpiar productos. El drawer permite crear pedidos mediante un POST a `/orders`.
+- **Manejo de notificaciones**: componente `NotificationsProvider` para mostrar mensajes de éxito o error en toda la aplicación.
+
+## Estructura principal
+
+- `src/app/` contiene las rutas de la App Router: páginas públicas, protegidas y el layout global.
+- `src/api/` centraliza el cliente HTTP (`apiFetch`), manejo de errores y endpoints organizados por dominio (`auth`, `users`, `products`, `orders`).
+- `src/hooks/` incluye hooks personalizados como `useAuth` y `useCart`.
+- `src/components/` alberga componentes reutilizables (auth, carrito, productos, órdenes, feedback).
+- `src/utils/` guarda utilidades auxiliares como formatters (`currency`).
+
+
+## Notas adicionales
+
+- Los tokens (`access`, `refresh`) se persisten con claves `pymedesk.accessToken` y `pymedesk.refreshToken`.
+- El perfil de usuario y el carrito utilizan `localStorage` (`pymedesk.me`, `pymedesk.cart`).
+- Asegúrate de que el backend exponga las rutas necesarias (`/auth/login/`, `/auth/register/`, `/users/me/`, `/products/`, `/orders/`).
