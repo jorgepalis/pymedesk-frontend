@@ -9,8 +9,8 @@ export const parsePrice = (value: string | number): number => {
 
 export const formatCurrency = (
   value: number | string,
-  locale: string = 'es-PE',
-  currency: string = 'PEN',
+  locale: string = 'es-CO',
+  currency: string = 'COP',
 ): string => {
   const amount = parsePrice(value);
   return amount.toLocaleString(locale, {
