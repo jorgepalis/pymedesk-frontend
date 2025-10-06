@@ -53,3 +53,8 @@ Pymedesk Frontend es una aplicación Next.js (App Router) que consume el backend
 - Los tokens (`access`, `refresh`) se persisten con claves `pymedesk.accessToken` y `pymedesk.refreshToken`.
 - El perfil de usuario y el carrito utilizan `localStorage` (`pymedesk.me`, `pymedesk.cart`).
 - Asegúrate de que el backend exponga las rutas necesarias (`/auth/login/`, `/auth/register/`, `/users/me/`, `/products/`, `/orders/`).
+
+## Usuarios de prueba
+-- Ususarios de prueba en la bd
+	puedes usar el usuario con rol admin, usuario: admin@admin.com contraseña: Admin21. (el punto incluido)
+	puedes usar el usuario con client, usuario: palis963@hotmail.com contraseña: Client21. (el punto incluido)
