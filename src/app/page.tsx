@@ -13,7 +13,7 @@ import { useCart } from '@/hooks/useCart';
 
 export default function Home() {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, profile } = useAuth();
   const { notify } = useNotifications();
   const { addItem } = useCart();
   const [authChecked, setAuthChecked] = useState(false);
@@ -22,9 +22,11 @@ export default function Home() {
   const [productsLoading, setProductsLoading] = useState(false);
   const [productsError, setProductsError] = useState<string | null>(null);
 
-  const goToOrders = useCallback(() => {
-    router.push('/orders');
-  }, [router]);
+  const isAdmin = profile?.role_name === 'admin';
+
+  const goToDestination = useCallback(() => {
+    router.push(isAdmin ? '/admin' : '/orders');
+  }, [isAdmin, router]);
 
   const handleAddToCart = useCallback(
     (product: Product) => {
@@ -104,10 +106,10 @@ export default function Home() {
       <div className="absolute top-6 right-6 flex items-center gap-2">
         <button
           type="button"
-          onClick={goToOrders}
+          onClick={goToDestination}
           className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200"
         >
-          Órdenes
+          {isAdmin ? 'Panel admin' : 'Órdenes'}
         </button>
         <LogoutButton />
       </div>
